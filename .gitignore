@@ -1,0 +1,12 @@
+node_modules
+dist
+.vercel
+*.local
+# Material fuente del cliente (no se publica)
+*.pptx
+WhatsApp Image*
+3FD0E0D3-*.png
+B523C214-*.png
+ITP_Cargo_8_Imagenes/
+.claude
+*.tsbuildinfo
