@@ -3,8 +3,11 @@ import { motion, useMotionValue, useScroll, useSpring, useTransform } from 'fram
 import RevealText from '../components/RevealText';
 import Icon from '../components/Icon';
 import { EASINGS } from '../utils/easings';
+import { useLang } from '../i18n';
 
 export default function Hero({ onTrack }: { onTrack: (code: string) => void }) {
+  const { t } = useLang();
+  const h = t.hero;
   const [code, setCode] = useState('');
   const { scrollY } = useScroll();
 
@@ -41,11 +44,11 @@ export default function Hero({ onTrack }: { onTrack: (code: string) => void }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15, duration: 0.6 }}
         >
-          <span className="live-dot" /> 28 años · República Dominicana
+          <span className="live-dot" /> {h.pill}
         </motion.div>
 
-        <RevealText tag="h1" className="hero__title" accent={[3, 4]} breaks={[0, 2]} delay={0.25} immediate>
-          Movemos tu carga más lejos
+        <RevealText tag="h1" className="hero__title" accent={h.accent} breaks={h.breaks} delay={0.25} immediate>
+          {h.title}
         </RevealText>
 
         <motion.p
@@ -54,7 +57,7 @@ export default function Hero({ onTrack }: { onTrack: (code: string) => void }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.75, duration: 0.7 }}
         >
-          Pioneros del servicio <strong>puerta a puerta</strong> en RD. Importa desde China, USA y Europa con un solo aliado: <em>desde la fábrica hasta su almacén.</em>
+          {h.sub[0]}<strong>{h.sub[1]}</strong>{h.sub[2]}<em>{h.sub[3]}</em>
         </motion.p>
 
         <motion.form
@@ -68,10 +71,10 @@ export default function Hero({ onTrack }: { onTrack: (code: string) => void }) {
           <input
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            placeholder="Rastrea tu envío · Ej. ITP-48213"
-            aria-label="Número de rastreo"
+            placeholder={h.placeholder}
+            aria-label={h.trackLabel}
           />
-          <button type="submit" aria-label="Rastrear envío"><Icon name="arrow" size={20} stroke={2.2} /></button>
+          <button type="submit" aria-label={h.trackBtn}><Icon name="arrow" size={20} stroke={2.2} /></button>
         </motion.form>
       </motion.div>
 
@@ -115,7 +118,7 @@ export default function Hero({ onTrack }: { onTrack: (code: string) => void }) {
               data-cursor
             >
               <div className="float">
-                <img src="/img/container.webp" alt="Contenedor ITP Cargo flotando" draggable={false} width={1100} height={693} />
+                <img src="/img/container.webp" alt={h.containerAlt} draggable={false} width={1100} height={693} />
               </div>
             </motion.div>
           </motion.div>
@@ -130,7 +133,7 @@ export default function Hero({ onTrack }: { onTrack: (code: string) => void }) {
         >
           <span>360°</span>
           <svg viewBox="0 0 24 10" width="22" aria-hidden="true"><path d="M2 3c3 5 17 5 20 0M18 1l4 2-3 3" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
-          <em>Desliza</em>
+          <em>{h.swipe}</em>
         </motion.div>
 
         <motion.div
@@ -140,7 +143,7 @@ export default function Hero({ onTrack }: { onTrack: (code: string) => void }) {
           transition={{ delay: 1.7, duration: 0.6 }}
         >
           <span className="chip__icon"><Icon name="globe" size={16} /></span>
-          <span>China · USA<br />Europa → RD</span>
+          <span>{h.chip[0]}<br />{h.chip[1]}</span>
         </motion.div>
       </div>
     </section>

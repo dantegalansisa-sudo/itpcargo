@@ -1,19 +1,28 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion';
 import Icon from './Icon';
-import { CONTACT, WA_DEFAULT } from '../data';
+import { CONTACT, wa } from '../data';
+import { useLang, type Lang } from '../i18n';
 import { EASINGS } from '../utils/easings';
 
-const LINKS = [
-  { href: '#servicios', label: 'Servicios' },
-  { href: '#proceso', label: 'Cómo trabajamos' },
-  { href: '#herramientas', label: 'Rastrear / Cotizar' },
-  { href: '#cobertura', label: 'Cobertura' },
-  { href: '#nosotros', label: 'Nosotros' },
-  { href: '#contacto', label: 'Contacto' },
-];
+const HREFS = ['#servicios', '#proceso', '#herramientas', '#cobertura', '#nosotros', '#contacto'];
+
+export function LangSwitch({ dark }: { dark?: boolean }) {
+  const { lang, setLang } = useLang();
+  return (
+    <div className={`lang ${dark ? 'lang--dark' : ''}`} role="group" aria-label="Idioma / Language">
+      {(['es', 'en'] as Lang[]).map((l) => (
+        <button key={l} onClick={() => setLang(l)} aria-pressed={lang === l} className={lang === l ? 'is-on' : ''}>
+          {lang === l && <motion.span layoutId={dark ? 'lang-pill-dark' : 'lang-pill'} className="lang__pill" transition={{ type: 'spring', stiffness: 420, damping: 32 }} />}
+          <span className="lang__txt">{l.toUpperCase()}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
 
 export default function Header() {
+  const { t } = useLang();
   const { scrollY } = useScroll();
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
@@ -36,12 +45,12 @@ export default function Header() {
         animate={{ y: hidden ? '-110%' : '0%' }}
         transition={{ duration: 0.45, ease: EASINGS.smooth }}
       >
-        <a href="#top" className="header__logo" aria-label="ITP Cargo — inicio">
+        <a href="#top" className="header__logo" aria-label={t.header.home}>
           <img src="/img/logo.png" alt="ITP Cargo" width={600} height={278} />
         </a>
         <div className="header__actions">
-          <a href={WA_DEFAULT} target="_blank" rel="noreferrer" className="header__cta">Cotizar</a>
-          <button className="header__menu" aria-label="Abrir menú" onClick={() => setOpen(true)}>
+          <LangSwitch />
+          <button className="header__menu" aria-label={t.header.open} onClick={() => setOpen(true)}>
             <Icon name="menu" size={22} stroke={2} />
           </button>
         </div>
@@ -58,22 +67,22 @@ export default function Header() {
           >
             <div className="menu__top">
               <img src="/img/logo-light.png" alt="ITP Cargo" className="menu__logo" />
-              <button className="header__menu header__menu--dark" aria-label="Cerrar menú" onClick={() => setOpen(false)}>
+              <button className="header__menu header__menu--dark" aria-label={t.header.close} onClick={() => setOpen(false)}>
                 <Icon name="close" size={22} stroke={2} />
               </button>
             </div>
             <nav className="menu__nav">
-              {LINKS.map((l, i) => (
-                <div className="reveal-mask" key={l.href}>
+              {t.header.links.map((label, i) => (
+                <div className="reveal-mask" key={HREFS[i]}>
                   <motion.a
-                    href={l.href}
+                    href={HREFS[i]}
                     onClick={() => setOpen(false)}
                     initial={{ y: '110%' }}
                     animate={{ y: 0 }}
                     transition={{ delay: 0.25 + i * 0.06, duration: 0.7, ease: EASINGS.premium }}
                   >
                     <span className="menu__num">0{i + 1}</span>
-                    {l.label}
+                    {label}
                   </motion.a>
                 </div>
               ))}
@@ -84,7 +93,11 @@ export default function Header() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7 }}
             >
-              <a href={WA_DEFAULT} target="_blank" rel="noreferrer"><Icon name="whatsapp" size={18} /> {CONTACT.phone}</a>
+              <LangSwitch dark />
+              <a href={wa(t.wa.default)} target="_blank" rel="noreferrer" className="btn btn--primary menu__cta">
+                {t.header.quote} <Icon name="arrow" size={18} stroke={2.2} />
+              </a>
+              <a href={wa(t.wa.default)} target="_blank" rel="noreferrer"><Icon name="whatsapp" size={18} /> {CONTACT.phone}</a>
               <a href={`mailto:${CONTACT.email}`}><Icon name="mail" size={18} /> {CONTACT.email}</a>
             </motion.div>
           </motion.div>

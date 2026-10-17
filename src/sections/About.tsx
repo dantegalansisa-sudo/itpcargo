@@ -2,22 +2,18 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import RevealText from '../components/RevealText';
 import Icon from '../components/Icon';
-import { ERRORS, VALUES } from '../data';
+import { useLang } from '../i18n';
 import { EASINGS, cardVariants, containerVariants, fadeUp } from '../utils/easings';
 import { useParallax } from '../hooks/useParallax';
 
-const PILLARS = [
-  {
-    key: 'mision', title: 'Misión', icon: 'spark' as const,
-    text: 'Brindar un servicio de calidad, eficiente y confiable, que contribuya al éxito de nuestros clientes y consolide nuestra posición como una de las principales empresas de logística y transporte internacional en la República Dominicana.',
-  },
-  {
-    key: 'vision', title: 'Visión', icon: 'globe' as const,
-    text: 'Mantenernos a la vanguardia del sector con soluciones innovadoras y eficientes, comprometidos con la satisfacción de cada cliente y la mejora continua de nuestros servicios.',
-  },
-];
-
 export default function About() {
+  const { t } = useLang();
+  const ab = t.about;
+  const tp = t.tips;
+  const PILLARS = [
+    { key: 'mision', title: ab.mission, icon: 'spark' as const, text: ab.missionText },
+    { key: 'vision', title: ab.vision, icon: 'globe' as const, text: ab.visionText },
+  ];
   const [open, setOpen] = useState<number | null>(0);
   const p = useParallax(40);
 
@@ -26,16 +22,16 @@ export default function About() {
       <section className="about" id="nosotros">
         <div className="section-head">
           <motion.span className="eyebrow" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-            Quiénes somos
+            {ab.eyebrow}
           </motion.span>
-          <RevealText tag="h2" className="section-title" accent={[5, 6]}>
-            Detrás de cada carga hay un equipo
+          <RevealText tag="h2" className="section-title" accent={ab.accent}>
+            {ab.title}
           </RevealText>
         </div>
 
         <div className="about__photo" ref={p.ref}>
-          <motion.img src="/img/p_image9.webp" alt="Equipo ITP Cargo" style={{ y: p.y, scale: 1.2 }} loading="lazy" />
-          <div className="about__photo-tag"><Icon name="users" size={18} /> Profesionales comprometidos con su negocio</div>
+          <motion.img src="/img/p_image9.webp" alt={ab.photoAlt} style={{ y: p.y, scale: 1.2 }} loading="lazy" />
+          <div className="about__photo-tag"><Icon name="users" size={18} /> {ab.photoTag}</div>
         </div>
 
         <motion.div className="pillars" variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
@@ -49,11 +45,11 @@ export default function About() {
         </motion.div>
 
         <div className="values">
-          <span className="values__title">Nuestros valores</span>
+          <span className="values__title">{ab.values}</span>
           <div className="values__rows">
             {[0, 1].map((row) => (
               <div className={`values__track ${row ? 'values__track--rev' : ''}`} key={row}>
-                {[...VALUES, ...VALUES].map((v, i) => (
+                {[...ab.valueList, ...ab.valueList].map((v, i) => (
                   <span key={i} className={`value-chip ${(i + row) % 3 === 0 ? 'value-chip--accent' : ''}`}>{v}</span>
                 ))}
               </div>
@@ -65,7 +61,7 @@ export default function About() {
       <section className="tips">
         <div className="section-head">
           <motion.span className="eyebrow" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-            Guía para importadores
+            {tp.eyebrow}
           </motion.span>
           <div className="tips__head">
             <motion.span
@@ -75,16 +71,16 @@ export default function About() {
               viewport={{ once: true }}
               transition={{ type: 'spring', stiffness: 160, damping: 12 }}
             >5</motion.span>
-            <RevealText tag="h2" className="section-title">errores que pueden retrasar tu importación</RevealText>
+            <RevealText tag="h2" className="section-title">{tp.title}</RevealText>
           </div>
         </div>
 
         <ul className="accordion">
-          {ERRORS.map((e, i) => {
+          {tp.items.map((e, i) => {
             const isOpen = open === i;
             return (
               <motion.li
-                key={e.title}
+                key={i}
                 className={`acc ${isOpen ? 'is-open' : ''}`}
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -114,7 +110,7 @@ export default function About() {
           })}
         </ul>
         <motion.p className="tips__quote" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-          Una buena logística comienza <strong>antes de que la carga salga.</strong>
+          {tp.quote[0]}<strong>{tp.quote[1]}</strong>
         </motion.p>
       </section>
     </>

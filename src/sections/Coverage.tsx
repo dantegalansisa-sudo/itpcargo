@@ -2,22 +2,23 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import RevealText from '../components/RevealText';
 import { EASINGS, fadeUp } from '../utils/easings';
+import { useLang } from '../i18n';
 
 const DR = { x: 292, y: 190 };
 
 const REGIONS = [
   {
-    id: 'asia', label: 'Asia', desc: 'Shenzhen, Shanghái, Ningbo, Guangzhou',
+    id: 'asia',
     points: [{ x: 735, y: 180 }, { x: 752, y: 150 }],
     cy: -40,
   },
   {
-    id: 'usa', label: 'Norteamérica', desc: 'Miami, Nueva York, Houston',
+    id: 'usa',
     points: [{ x: 252, y: 166 }, { x: 283, y: 126 }],
     cy: 60,
   },
   {
-    id: 'eu', label: 'Europa', desc: 'Valencia, Rotterdam, Hamburgo',
+    id: 'eu',
     points: [{ x: 428, y: 124 }, { x: 463, y: 96 }],
     cy: 30,
   },
@@ -30,24 +31,26 @@ const arc = (a: { x: number; y: number }, lift: number) => {
 };
 
 export default function Coverage() {
+  const { t } = useLang();
+  const cv = t.coverage;
   const [active, setActive] = useState('asia');
 
   return (
     <section className="coverage" id="cobertura">
       <div className="section-head">
         <motion.span className="eyebrow" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-          Cobertura global
+          {cv.eyebrow}
         </motion.span>
-        <RevealText tag="h2" className="section-title" accent={[2, 3]}>
-          Tu carga, sin fronteras
+        <RevealText tag="h2" className="section-title" accent={cv.accent}>
+          {cv.title}
         </RevealText>
         <motion.p className="section-sub" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-          Consolidamos en cualquier ciudad de China, USA o Europa y la llevamos hasta República Dominicana.
+          {cv.sub}
         </motion.p>
       </div>
 
       <div className="map">
-        <img src="/img/mapa.webp" alt="Mapa de rutas hacia República Dominicana" loading="lazy" />
+        <img src="/img/mapa.webp" alt={cv.mapAlt} loading="lazy" />
         <svg viewBox="0 0 968 420" preserveAspectRatio="xMidYMid slice" className="map__svg" aria-hidden="true">
           {REGIONS.map((r) =>
             r.points.map((p, i) => {
@@ -76,16 +79,16 @@ export default function Coverage() {
           <circle cx={DR.x} cy={DR.y} r="9" className="map__dr" />
           <g className="map__tag" transform={`translate(${DR.x - 92} ${DR.y + 22})`}>
             <rect width="184" height="30" rx="15" />
-            <text x="92" y="20" textAnchor="middle">República Dominicana</text>
+            <text x="92" y="20" textAnchor="middle">{cv.dr}</text>
           </g>
         </svg>
       </div>
 
       <div className="regions">
-        {REGIONS.map((r) => (
+        {REGIONS.map((r, i) => (
           <button key={r.id} className={`region ${active === r.id ? 'is-active' : ''}`} onClick={() => setActive(r.id)}>
-            <span className="region__label">{r.label}</span>
-            <span className="region__desc">{r.desc}</span>
+            <span className="region__label">{cv.regions[i].label}</span>
+            <span className="region__desc">{cv.regions[i].desc}</span>
             {active === r.id && <motion.span layoutId="region-bar" className="region__bar" />}
           </button>
         ))}

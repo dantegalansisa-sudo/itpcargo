@@ -27,6 +27,7 @@ export default function RevealText({
   const words = children.split(' ');
   return (
     <Tag
+      key={children}
       className={`reveal-text ${className}`}
       aria-label={children}
       initial="hidden"

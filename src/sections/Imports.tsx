@@ -1,11 +1,14 @@
 import { motion } from 'framer-motion';
 import RevealText from '../components/RevealText';
 import Icon from '../components/Icon';
-import { IMPORTS, wa } from '../data';
+import { wa } from '../data';
+import { IMPORT_ICONS, useLang } from '../i18n';
 import { cardVariants, containerVariants, fadeUp } from '../utils/easings';
 import { useParallax } from '../hooks/useParallax';
 
 export default function Imports() {
+  const { t } = useLang();
+  const im = t.imports;
   const p = useParallax(40);
   return (
     <section className="imports">
@@ -15,10 +18,10 @@ export default function Imports() {
         </div>
         <div className="imports__content">
           <motion.span className="eyebrow eyebrow--dark" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-            Importa desde China
+            {im.eyebrow}
           </motion.span>
-          <RevealText tag="h2" className="section-title section-title--light" accent={[4, 5]}>
-            ¿Qué puedes importar con tarifas preferenciales?
+          <RevealText tag="h2" className="section-title section-title--light" accent={im.accent}>
+            {im.title}
           </RevealText>
 
           <motion.div
@@ -28,23 +31,23 @@ export default function Imports() {
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
           >
-            {IMPORTS.map((it) => (
+            {im.items.map((title, i) => (
               <motion.a
-                key={it.title}
+                key={i}
                 className="import-chip"
                 variants={cardVariants}
-                href={wa(`Hola ITP Cargo, quiero importar ${it.title.toLowerCase()} desde China. ¿Me pueden cotizar?`)}
+                href={wa(t.wa.import(title))}
                 target="_blank"
                 rel="noreferrer"
                 whileTap={{ scale: 0.95 }}
               >
-                <span className="import-chip__icon"><Icon name={it.icon} size={22} /></span>
-                <span>{it.title}</span>
+                <span className="import-chip__icon"><Icon name={IMPORT_ICONS[i]} size={22} /></span>
+                <span>{title}</span>
                 <Icon name="arrow" size={15} className="import-chip__arrow" />
               </motion.a>
             ))}
           </motion.div>
-          <p className="imports__note">Toca una categoría y te cotizamos por WhatsApp.</p>
+          <p className="imports__note">{im.note}</p>
         </div>
       </div>
     </section>

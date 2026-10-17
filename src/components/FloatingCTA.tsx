@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion';
 import Icon from './Icon';
-import { WA_DEFAULT } from '../data';
+import { wa } from '../data';
+import { useLang } from '../i18n';
 
 export default function FloatingCTA() {
+  const { t } = useLang();
   const { scrollY, scrollYProgress } = useScroll();
   const [show, setShow] = useState(false);
   useMotionValueEvent(scrollY, 'change', (v) => {
@@ -17,11 +19,11 @@ export default function FloatingCTA() {
       <AnimatePresence>
         {show && (
           <motion.a
-            href={WA_DEFAULT}
+            href={wa(t.wa.default)}
             target="_blank"
             rel="noreferrer"
             className="wa-fab"
-            aria-label="Escríbenos por WhatsApp"
+            aria-label={t.final.fab}
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}

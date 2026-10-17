@@ -4,27 +4,17 @@ import RevealText from '../components/RevealText';
 import Icon from '../components/Icon';
 import MagneticButton from '../components/MagneticButton';
 import { wa } from '../data';
+import { useLang } from '../i18n';
 import { EASINGS, fadeUp } from '../utils/easings';
 
 type Tab = 'track' | 'quote';
 
-const ORIGINS = ['China', 'Estados Unidos', 'Europa', 'Otro origen'];
-const MODES = ['Marítimo', 'Aéreo', 'Terrestre (nacional)'];
-const LOADS = ['Carga consolidada (LCL)', 'Contenedor completo (FCL)', 'Carga suelta / paquetes'];
-
-// Tiempos de tránsito referenciales para la demo
-const TRANSIT: Record<string, Record<string, string>> = {
-  China: { 'Marítimo': '35–45 días', 'Aéreo': '7–12 días' },
-  'Estados Unidos': { 'Marítimo': '7–12 días', 'Aéreo': '3–5 días' },
-  Europa: { 'Marítimo': '18–25 días', 'Aéreo': '5–8 días' },
-};
-
-const TRACK_STAGES = [
-  { label: 'Recogido en origen', place: 'Shenzhen, China' },
-  { label: 'Consolidado y embarcado', place: 'Puerto de Yantian' },
-  { label: 'En tránsito marítimo', place: 'Océano Pacífico · Canal de Panamá' },
-  { label: 'Arribo y despacho aduanero', place: 'Puerto Caucedo, RD' },
-  { label: 'Entregado en almacén', place: 'Santo Domingo, RD' },
+// Tiempos de tránsito referenciales para la demo — [origen][modalidad], índices de i18n
+// origen: 0 China, 1 USA, 2 Europa · modalidad: 0 marítimo, 1 aéreo
+const TRANSIT: (string | null)[][] = [
+  ['35–45', '7–12'],
+  ['7–12', '3–5'],
+  ['18–25', '5–8'],
 ];
 
 function stageFor(code: string) {
@@ -34,12 +24,14 @@ function stageFor(code: string) {
 }
 
 export default function Tools({ trackCode, nonce }: { trackCode: string; nonce: number }) {
+  const { t } = useLang();
+  const tl = t.tools;
   const [tab, setTab] = useState<Tab>('track');
   const [code, setCode] = useState('');
   const [result, setResult] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const [q, setQ] = useState({ origin: 'China', mode: 'Marítimo', load: LOADS[0], product: '', name: '' });
+  const [q, setQ] = useState({ origin: 0, mode: 0, load: 0, product: '', name: '' });
 
   const runTrack = (c: string) => {
     const v = c.trim().toUpperCase() || 'ITP-48213';
@@ -55,23 +47,20 @@ export default function Tools({ trackCode, nonce }: { trackCode: string; nonce: 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nonce]);
 
+  const stages = tl.stages;
   const done = useMemo(() => (result ? stageFor(result) : 0), [result]);
-  const transit = TRANSIT[q.origin]?.[q.mode];
+  const transit = TRANSIT[q.origin]?.[q.mode] ?? null;
 
-  const quoteMsg =
-    `Hola ITP Cargo, quiero cotizar un envío:\n` +
-    `• Origen: ${q.origin}\n• Modalidad: ${q.mode}\n• Tipo de carga: ${q.load}\n` +
-    (q.product ? `• Producto: ${q.product}\n` : '') +
-    (q.name ? `Mi nombre: ${q.name}` : '');
+  const quoteMsg = tl.msg(tl.origins[q.origin], tl.modes[q.mode], tl.loads[q.load], q.product, q.name);
 
   return (
     <section className="tools" id="herramientas">
       <div className="section-head">
         <motion.span className="eyebrow" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-          Autoservicio
+          {tl.eyebrow}
         </motion.span>
-        <RevealText tag="h2" className="section-title" accent={[1, 2]}>
-          Rastrea o cotiza tu envío
+        <RevealText tag="h2" className="section-title" accent={tl.accent}>
+          {tl.title}
         </RevealText>
       </div>
 
@@ -83,10 +72,10 @@ export default function Tools({ trackCode, nonce }: { trackCode: string; nonce: 
         transition={{ duration: 0.8, ease: EASINGS.premium }}
       >
         <div className="tabs" role="tablist">
-          {(['track', 'quote'] as Tab[]).map((t) => (
-            <button key={t} role="tab" aria-selected={tab === t} className={tab === t ? 'is-active' : ''} onClick={() => setTab(t)}>
-              {tab === t && <motion.span layoutId="tab-pill" className="tabs__pill" transition={{ type: 'spring', stiffness: 380, damping: 32 }} />}
-              <span className="tabs__label"><Icon name={t === 'track' ? 'search' : 'calc'} size={17} /> {t === 'track' ? 'Rastrear' : 'Cotizar'}</span>
+          {(['track', 'quote'] as Tab[]).map((k, i) => (
+            <button key={k} role="tab" aria-selected={tab === k} className={tab === k ? 'is-active' : ''} onClick={() => setTab(k)}>
+              {tab === k && <motion.span layoutId="tab-pill" className="tabs__pill" transition={{ type: 'spring', stiffness: 380, damping: 32 }} />}
+              <span className="tabs__label"><Icon name={k === 'track' ? 'search' : 'calc'} size={17} /> {tl.tabs[i]}</span>
             </button>
           ))}
         </div>
@@ -95,13 +84,13 @@ export default function Tools({ trackCode, nonce }: { trackCode: string; nonce: 
           {tab === 'track' ? (
             <motion.div key="track" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} transition={{ duration: 0.3 }}>
               <form className="field-row" onSubmit={(e) => { e.preventDefault(); runTrack(code); }}>
-                <input className="field" value={code} onChange={(e) => setCode(e.target.value)} placeholder="Número de guía o BL" aria-label="Número de guía" />
-                <button className="btn btn--primary btn--sm" type="submit">Rastrear</button>
+                <input className="field" value={code} onChange={(e) => setCode(e.target.value)} placeholder={tl.trackPh} aria-label={tl.trackPh} />
+                <button className="btn btn--primary btn--sm" type="submit">{tl.trackBtn}</button>
               </form>
 
               {loading && (
                 <div className="track-loading">
-                  <span className="spinner" /> Localizando su carga…
+                  <span className="spinner" /> {tl.loading}
                 </div>
               )}
 
@@ -109,16 +98,18 @@ export default function Tools({ trackCode, nonce }: { trackCode: string; nonce: 
                 <motion.div className="track-result" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
                   <div className="track-result__head">
                     <div>
-                      <span className="muted">Envío</span>
+                      <span className="muted">{tl.shipment}</span>
                       <strong>{result}</strong>
                     </div>
-                    <span className={`status ${done >= TRACK_STAGES.length ? 'status--ok' : ''}`}>{done >= TRACK_STAGES.length ? 'Entregado' : `En curso · etapa ${done + 1} de ${TRACK_STAGES.length}`}</span>
+                    <span className={`status ${done >= stages.length ? 'status--ok' : ''}`}>
+                      {done >= stages.length ? tl.delivered : tl.inProgress(done + 1, stages.length)}
+                    </span>
                   </div>
-                  <div className="track-bar-progress"><motion.span initial={{ width: 0 }} animate={{ width: `${(done / TRACK_STAGES.length) * 100}%` }} transition={{ duration: 1.2, ease: EASINGS.premium }} /></div>
+                  <div className="track-bar-progress"><motion.span initial={{ width: 0 }} animate={{ width: `${(done / stages.length) * 100}%` }} transition={{ duration: 1.2, ease: EASINGS.premium }} /></div>
                   <ul className="track-steps">
-                    {TRACK_STAGES.map((s, i) => (
+                    {stages.map((s, i) => (
                       <motion.li
-                        key={s.label}
+                        key={i}
                         className={i < done ? 'is-done' : i === done ? 'is-current' : ''}
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -129,47 +120,47 @@ export default function Tools({ trackCode, nonce }: { trackCode: string; nonce: 
                       </motion.li>
                     ))}
                   </ul>
-                  <p className="demo-note">Vista demo con datos ilustrativos. Se conectará al sistema de rastreo de ITP Cargo.</p>
+                  <p className="demo-note">{tl.trackNote}</p>
                 </motion.div>
               )}
             </motion.div>
           ) : (
             <motion.div key="quote" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }}>
               <div className="quote">
-                <label className="quote__label">Origen</label>
+                <label className="quote__label">{tl.origin}</label>
                 <div className="seg">
-                  {ORIGINS.map((o) => (
-                    <button key={o} className={q.origin === o ? 'is-on' : ''} onClick={() => setQ({ ...q, origin: o })}>{o}</button>
+                  {tl.origins.map((o, i) => (
+                    <button key={i} className={q.origin === i ? 'is-on' : ''} onClick={() => setQ({ ...q, origin: i })}>{o}</button>
                   ))}
                 </div>
-                <label className="quote__label">Modalidad</label>
+                <label className="quote__label">{tl.mode}</label>
                 <div className="seg">
-                  {MODES.map((o) => (
-                    <button key={o} className={q.mode === o ? 'is-on' : ''} onClick={() => setQ({ ...q, mode: o })}>{o}</button>
+                  {tl.modes.map((o, i) => (
+                    <button key={i} className={q.mode === i ? 'is-on' : ''} onClick={() => setQ({ ...q, mode: i })}>{o}</button>
                   ))}
                 </div>
-                <label className="quote__label" htmlFor="q-load">Tipo de carga</label>
-                <select id="q-load" className="field" value={q.load} onChange={(e) => setQ({ ...q, load: e.target.value })}>
-                  {LOADS.map((l) => <option key={l}>{l}</option>)}
+                <label className="quote__label" htmlFor="q-load">{tl.load}</label>
+                <select id="q-load" className="field" value={q.load} onChange={(e) => setQ({ ...q, load: Number(e.target.value) })}>
+                  {tl.loads.map((l, i) => <option key={i} value={i}>{l}</option>)}
                 </select>
-                <label className="quote__label" htmlFor="q-prod">¿Qué va a importar?</label>
-                <input id="q-prod" className="field" placeholder="Ej. aires acondicionados, cerámica…" value={q.product} onChange={(e) => setQ({ ...q, product: e.target.value })} />
-                <label className="quote__label" htmlFor="q-name">Su nombre o empresa</label>
-                <input id="q-name" className="field" placeholder="Opcional" value={q.name} onChange={(e) => setQ({ ...q, name: e.target.value })} />
+                <label className="quote__label" htmlFor="q-prod">{tl.product}</label>
+                <input id="q-prod" className="field" placeholder={tl.productPh} value={q.product} onChange={(e) => setQ({ ...q, product: e.target.value })} />
+                <label className="quote__label" htmlFor="q-name">{tl.name}</label>
+                <input id="q-name" className="field" placeholder={tl.namePh} value={q.name} onChange={(e) => setQ({ ...q, name: e.target.value })} />
 
                 <AnimatePresence>
                   {transit && (
                     <motion.div className="quote__transit" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}>
                       <Icon name="clock" size={18} />
-                      <span>Tránsito estimado {q.origin} → RD: <strong>{transit}</strong></span>
+                      <span>{tl.transit} {tl.origins[q.origin]} → {tl.dest}: <strong>{transit} {tl.days}</strong></span>
                     </motion.div>
                   )}
                 </AnimatePresence>
 
                 <MagneticButton href={wa(quoteMsg)} external className="btn btn--primary btn--block">
-                  <Icon name="whatsapp" size={19} /> Enviar cotización por WhatsApp
+                  <Icon name="whatsapp" size={19} /> {tl.send}
                 </MagneticButton>
-                <p className="demo-note">Tiempos referenciales. Le confirmamos tarifa y fecha exacta.</p>
+                <p className="demo-note">{tl.quoteNote}</p>
               </div>
             </motion.div>
           )}
