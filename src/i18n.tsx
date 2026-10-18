@@ -23,7 +23,7 @@ const es = {
   hero: {
     pill: '28 años · República Dominicana',
     title: 'Movemos tu carga más lejos',
-    accent: [3, 4], breaks: [0, 2],
+    accent: [3, 4], breaks: [0, 2], deskBreaks: [2],
     sub: [
       'Pioneros del servicio ', 'puerta a puerta', ' en RD. Importa desde China, USA y Europa con un solo aliado: ',
       'desde la fábrica hasta su almacén.',
@@ -34,6 +34,7 @@ const es = {
     containerAlt: 'Contenedor ITP Cargo flotando',
     swipe: 'Desliza',
     chip: ['China · USA', 'Europa → RD'],
+    chip2: ['Puerta a puerta', 'Fábrica → almacén'],
   },
   story: {
     routesLabel: 'Rutas frecuentes',
@@ -188,7 +189,7 @@ const en: Dict = {
   hero: {
     pill: '28 years · Dominican Republic',
     title: 'We move your cargo further',
-    accent: [4], breaks: [1, 3],
+    accent: [4], breaks: [1, 3], deskBreaks: [3],
     sub: [
       'Pioneers of ', 'door-to-door', ' service in the DR. Import from China, the USA and Europe with a single partner: ',
       'from the factory to your warehouse.',
@@ -199,6 +200,7 @@ const en: Dict = {
     containerAlt: 'Floating ITP Cargo container',
     swipe: 'Swipe',
     chip: ['China · USA', 'Europe → DR'],
+    chip2: ['Door to door', 'Factory → warehouse'],
   },
   story: {
     routesLabel: 'Frequent routes',

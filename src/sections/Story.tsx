@@ -39,45 +39,47 @@ export default function Story() {
           <motion.span style={{ x: bigX }}>{st.big}</motion.span>
         </div>
 
-        <motion.span className="eyebrow eyebrow--dark" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-          {st.eyebrow}
-        </motion.span>
-        <RevealText tag="h2" className="story__title" accent={st.accent}>
-          {st.title}
-        </RevealText>
+        <div className="story__row">
+          <div className="story__copy">
+            <motion.span className="eyebrow eyebrow--dark" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+              {st.eyebrow}
+            </motion.span>
+            <RevealText tag="h2" className="story__title" accent={st.accent}>
+              {st.title}
+            </RevealText>
+            <motion.p className="story__text" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+              {st.text}
+            </motion.p>
 
-        <motion.div className="story__media" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }}>
-          <motion.div
-            className="story__img story__img--a"
-            ref={p1.ref}
-            variants={{
-              hidden: { clipPath: 'inset(0% 100% 0% 0%)' },
-              visible: { clipPath: 'inset(0% 0% 0% 0%)', transition: { duration: 1.2, ease: EASINGS.premium } },
-            }}
-          >
-            <motion.img src="/img/hero.webp" alt={st.imgAlt} style={{ y: p1.y, scale: 1.25 }} loading="lazy" />
+            <div className="story__ctas">
+              <MagneticButton href={wa(t.wa.default)} external className="btn btn--primary">
+                {st.cta} <Icon name="arrow" size={18} stroke={2.2} />
+              </MagneticButton>
+              <MagneticButton href="#nosotros" className="btn btn--ghost-dark">{st.more}</MagneticButton>
+            </div>
+          </div>
+          <motion.div className="story__media" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }}>
+            <motion.div
+              className="story__img story__img--a"
+              ref={p1.ref}
+              variants={{
+                hidden: { clipPath: 'inset(0% 100% 0% 0%)' },
+                visible: { clipPath: 'inset(0% 0% 0% 0%)', transition: { duration: 1.2, ease: EASINGS.premium } },
+              }}
+            >
+              <motion.img src="/img/hero.webp" alt={st.imgAlt} style={{ y: p1.y, scale: 1.25 }} loading="lazy" />
+            </motion.div>
+            <motion.div
+              className="story__badge"
+              initial={{ scale: 0.6, opacity: 0 }}
+              whileInView={{ scale: 1, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ type: 'spring', stiffness: 160, damping: 14, delay: 0.4 }}
+            >
+              <strong>#1</strong>
+              <span>{st.badge}</span>
+            </motion.div>
           </motion.div>
-          <motion.div
-            className="story__badge"
-            initial={{ scale: 0.6, opacity: 0 }}
-            whileInView={{ scale: 1, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ type: 'spring', stiffness: 160, damping: 14, delay: 0.4 }}
-          >
-            <strong>#1</strong>
-            <span>{st.badge}</span>
-          </motion.div>
-        </motion.div>
-
-        <motion.p className="story__text" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-          {st.text}
-        </motion.p>
-
-        <div className="story__ctas">
-          <MagneticButton href={wa(t.wa.default)} external className="btn btn--primary">
-            {st.cta} <Icon name="arrow" size={18} stroke={2.2} />
-          </MagneticButton>
-          <MagneticButton href="#nosotros" className="btn btn--ghost-dark">{st.more}</MagneticButton>
         </div>
 
         <motion.div

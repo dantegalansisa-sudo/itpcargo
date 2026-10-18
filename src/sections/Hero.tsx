@@ -4,6 +4,7 @@ import RevealText from '../components/RevealText';
 import Icon from '../components/Icon';
 import { EASINGS } from '../utils/easings';
 import { useLang } from '../i18n';
+import { DESKTOP, useMediaQuery } from '../hooks/useMediaQuery';
 
 export default function Hero({ onTrack }: { onTrack: (code: string) => void }) {
   const { t } = useLang();
@@ -12,9 +13,10 @@ export default function Hero({ onTrack }: { onTrack: (code: string) => void }) {
   const { scrollY } = useScroll();
 
   // Coreografía del contenedor: al hacer scroll baja, gira y "aterriza" sobre la sección oscura
-  const rawY = useTransform(scrollY, [0, 520], [0, 95]);
-  const rawRot = useTransform(scrollY, [0, 520], [0, 9]);
-  const rawScale = useTransform(scrollY, [0, 520], [1, 0.9]);
+  const desk = useMediaQuery(DESKTOP);
+  const rawY = useTransform(scrollY, [0, desk ? 640 : 520], [0, desk ? 170 : 95]);
+  const rawRot = useTransform(scrollY, [0, desk ? 640 : 520], [0, desk ? 6 : 9]);
+  const rawScale = useTransform(scrollY, [0, desk ? 640 : 520], [1, desk ? 0.86 : 0.9]);
   const y = useSpring(rawY, { stiffness: 120, damping: 22 });
   const rotate = useSpring(rawRot, { stiffness: 120, damping: 22 });
   const scale = useSpring(rawScale, { stiffness: 120, damping: 22 });
@@ -47,7 +49,7 @@ export default function Hero({ onTrack }: { onTrack: (code: string) => void }) {
           <span className="live-dot" /> {h.pill}
         </motion.div>
 
-        <RevealText tag="h1" className="hero__title" accent={h.accent} breaks={h.breaks} delay={0.25} immediate>
+        <RevealText tag="h1" className="hero__title" accent={h.accent} breaks={h.breaks} deskBreaks={h.deskBreaks} delay={0.25} immediate>
           {h.title}
         </RevealText>
 
@@ -144,6 +146,17 @@ export default function Hero({ onTrack }: { onTrack: (code: string) => void }) {
         >
           <span className="chip__icon"><Icon name="globe" size={16} /></span>
           <span>{h.chip[0]}<br />{h.chip[1]}</span>
+        </motion.div>
+
+        {/* Solo escritorio */}
+        <motion.div
+          className="chip chip--bl"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 1.9, duration: 0.6 }}
+        >
+          <span className="chip__icon chip__icon--live"><span className="live-dot" /></span>
+          <span>{h.chip2[0]}<br />{h.chip2[1]}</span>
         </motion.div>
       </div>
     </section>

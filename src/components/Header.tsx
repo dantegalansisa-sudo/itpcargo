@@ -48,8 +48,14 @@ export default function Header() {
         <a href="#top" className="header__logo" aria-label={t.header.home}>
           <img src="/img/logo.png" alt="ITP Cargo" width={600} height={278} />
         </a>
+        <nav className="header__nav" aria-label="Principal">
+          {t.header.links.map((label, i) => (
+            <a key={HREFS[i]} href={HREFS[i]}>{label}</a>
+          ))}
+        </nav>
         <div className="header__actions">
           <LangSwitch />
+          <a href={wa(t.wa.default)} target="_blank" rel="noreferrer" className="header__cta">{t.header.quote}</a>
           <button className="header__menu" aria-label={t.header.open} onClick={() => setOpen(true)}>
             <Icon name="menu" size={22} stroke={2} />
           </button>

@@ -8,8 +8,10 @@ interface Props {
   tag?: 'h1' | 'h2' | 'h3' | 'p' | 'span';
   /** palabras (por índice) que se pintan con el acento naranja */
   accent?: number[];
-  /** forzar salto de línea después de estos índices */
+  /** salto de línea después de estos índices (móvil y tablet) */
   breaks?: number[];
+  /** salto de línea en escritorio; si no se pasa, se usan los de `breaks` */
+  deskBreaks?: number[];
   immediate?: boolean;
 }
 
@@ -21,7 +23,7 @@ const word = {
 // El observer va en el titular (visible), no en cada palabra: las palabras arrancan
 // fuera de su máscara overflow:hidden y el IntersectionObserver nunca las detectaría.
 export default function RevealText({
-  children, className = '', delay = 0, tag = 'h2', accent = [], breaks = [], immediate,
+  children, className = '', delay = 0, tag = 'h2', accent = [], breaks = [], deskBreaks, immediate,
 }: Props) {
   const Tag = motion[tag];
   const words = children.split(' ');
@@ -40,7 +42,13 @@ export default function RevealText({
               {w}
             </motion.span>
           </span>
-          {breaks.includes(i) ? <br /> : ' '}
+          {' '}
+          {deskBreaks ? (
+            <>
+              {breaks.includes(i) && <br className="br-m" />}
+              {deskBreaks.includes(i) && <br className="br-d" />}
+            </>
+          ) : breaks.includes(i) && <br />}
         </span>
       ))}
     </Tag>
