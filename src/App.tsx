@@ -10,6 +10,7 @@ import Imports from './sections/Imports';
 import Tools from './sections/Tools';
 import Coverage from './sections/Coverage';
 import About from './sections/About';
+import Contact from './sections/Contact';
 import Final from './sections/Final';
 
 export default function App() {
@@ -33,6 +34,7 @@ export default function App() {
         <Tools trackCode={track.code} nonce={track.nonce} />
         <Coverage />
         <About />
+        <Contact />
         <Final />
       </main>
       <FloatingCTA />

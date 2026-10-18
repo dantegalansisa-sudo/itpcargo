@@ -35,7 +35,7 @@ export default function Final() {
         <motion.img src="/img/container.webp" alt="" className="final__container" style={{ y: cy, rotate: cr }} aria-hidden="true" />
       </section>
 
-      <footer className="footer" id="contacto">
+      <footer className="footer" id="footer">
         <img src="/img/logo-light.png" alt="ITP Cargo" className="footer__logo" loading="lazy" />
         <p className="footer__tag">{f.tag}</p>
 

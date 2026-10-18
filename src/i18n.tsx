@@ -151,6 +151,36 @@ const es = {
     ],
     quote: ['Una buena logística comienza ', 'antes de que la carga salga.'],
   },
+  contact: {
+    eyebrow: 'Contacto',
+    title: 'Hablemos de tu próxima carga', accent: [3, 4],
+    sub: 'Cuéntanos qué necesitas mover y un asesor de ITP Cargo te responde con una propuesta a la medida.',
+    perks: ['Respuesta rápida de un asesor', 'Asesoría en aduanas y documentación', 'Cotización clara, sin letras pequeñas'],
+    direct: 'Contacto directo',
+    fields: {
+      name: 'Nombre completo', company: 'Empresa', email: 'Correo electrónico', phone: 'Teléfono / WhatsApp',
+      service: 'Servicio de interés', origin: 'Origen de la carga', message: 'Cuéntanos sobre tu carga',
+    },
+    ph: {
+      name: 'Ej. María Pérez', company: 'Opcional', email: 'tu@empresa.com', phone: '(809) 000-0000',
+      message: 'Qué importas, volumen aproximado, fecha estimada…',
+    },
+    serviceOpts: ['Transporte marítimo', 'Transporte aéreo', 'Transporte terrestre', 'Despacho aduanero', 'Almacenaje y distribución', 'Carga consolidada', 'Otro / no estoy seguro'],
+    originOpts: ['China', 'Estados Unidos', 'Europa', 'Otro'],
+    required: 'Campo requerido',
+    invalidEmail: 'Correo no válido',
+    consent: 'Acepto que ITP Cargo me contacte sobre esta solicitud.',
+    submit: 'Enviar solicitud',
+    sending: 'Enviando…',
+    okTitle: '¡Solicitud lista!',
+    okText: 'Abrimos WhatsApp con tus datos para que la envíes a nuestro asesor. Si prefieres, también puedes enviarla por correo.',
+    okMail: 'Enviar por correo',
+    again: 'Nueva solicitud',
+    msg: (d: Record<string, string>) =>
+      `Hola ITP Cargo, quiero solicitar información:\n• Nombre: ${d.name}\n` + (d.company ? `• Empresa: ${d.company}\n` : '') +
+      `• Correo: ${d.email}\n• Teléfono: ${d.phone}\n• Servicio: ${d.service}\n• Origen: ${d.origin}\n\n${d.message}`,
+    mailSubject: 'Solicitud de cotización — sitio web',
+  },
   final: {
     eyebrow: 'Cotiza hoy',
     title: 'Hagamos que tu próxima ruta sea un gran negocio', accent: [5, 6],
@@ -316,6 +346,36 @@ const en: Dict = {
       { title: 'Choosing the wrong cargo type', desc: 'Full container or consolidated? Ocean or air? We advise you based on volume, urgency and budget.' },
     ],
     quote: ['Good logistics starts ', 'before the cargo leaves.'],
+  },
+  contact: {
+    eyebrow: 'Contact',
+    title: 'Let’s talk about your next shipment', accent: [4, 5],
+    sub: 'Tell us what you need to move and an ITP Cargo advisor will reply with a tailored proposal.',
+    perks: ['Quick reply from an advisor', 'Customs & paperwork advisory', 'Clear quotes, no fine print'],
+    direct: 'Direct contact',
+    fields: {
+      name: 'Full name', company: 'Company', email: 'Email', phone: 'Phone / WhatsApp',
+      service: 'Service of interest', origin: 'Cargo origin', message: 'Tell us about your cargo',
+    },
+    ph: {
+      name: 'e.g. Maria Perez', company: 'Optional', email: 'you@company.com', phone: '+1 (809) 000-0000',
+      message: 'What you import, approximate volume, estimated date…',
+    },
+    serviceOpts: ['Ocean freight', 'Air freight', 'Ground transport', 'Customs clearance', 'Warehousing & distribution', 'Consolidated cargo', 'Other / not sure'],
+    originOpts: ['China', 'United States', 'Europe', 'Other'],
+    required: 'Required field',
+    invalidEmail: 'Invalid email',
+    consent: 'I agree to be contacted by ITP Cargo about this request.',
+    submit: 'Send request',
+    sending: 'Sending…',
+    okTitle: 'Request ready!',
+    okText: 'We opened WhatsApp with your details so you can send them to our advisor. You can also send it by email.',
+    okMail: 'Send by email',
+    again: 'New request',
+    msg: (d: Record<string, string>) =>
+      `Hello ITP Cargo, I'd like some information:\n• Name: ${d.name}\n` + (d.company ? `• Company: ${d.company}\n` : '') +
+      `• Email: ${d.email}\n• Phone: ${d.phone}\n• Service: ${d.service}\n• Origin: ${d.origin}\n\n${d.message}`,
+    mailSubject: 'Quote request — website',
   },
   final: {
     eyebrow: 'Quote today',
