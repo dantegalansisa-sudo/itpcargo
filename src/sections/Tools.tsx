@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import RevealText from '../components/RevealText';
 import Icon from '../components/Icon';
 import MagneticButton from '../components/MagneticButton';
+import TrackPanel from '../components/TrackPanel';
 import { wa } from '../data';
 import { useLang } from '../i18n';
 import { EASINGS, fadeUp } from '../utils/easings';
@@ -17,38 +18,18 @@ const TRANSIT: (string | null)[][] = [
   ['18–25', '5–8'],
 ];
 
-function stageFor(code: string) {
-  let h = 0;
-  for (const c of code) h = (h * 31 + c.charCodeAt(0)) >>> 0;
-  return 1 + (h % 5); // entre 1 y 5 etapas completadas
-}
-
 export default function Tools({ trackCode, nonce }: { trackCode: string; nonce: number }) {
   const { t } = useLang();
   const tl = t.tools;
   const [tab, setTab] = useState<Tab>('track');
-  const [code, setCode] = useState('');
-  const [result, setResult] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
 
   const [q, setQ] = useState({ origin: 0, mode: 0, load: 0, product: '', name: '' });
 
-  const runTrack = (c: string) => {
-    const v = c.trim().toUpperCase() || 'ITP-48213';
-    setCode(v);
-    setTab('track');
-    setLoading(true);
-    setResult(null);
-    window.setTimeout(() => { setLoading(false); setResult(v); }, 1100);
-  };
-
   useEffect(() => {
-    if (nonce > 0) runTrack(trackCode);
+    if (nonce > 0) setTab('track');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nonce]);
 
-  const stages = tl.stages;
-  const done = useMemo(() => (result ? stageFor(result) : 0), [result]);
   const transit = TRANSIT[q.origin]?.[q.mode] ?? null;
 
   const quoteMsg = tl.msg(tl.origins[q.origin], tl.modes[q.mode], tl.loads[q.load], q.product, q.name);
@@ -83,46 +64,7 @@ export default function Tools({ trackCode, nonce }: { trackCode: string; nonce: 
         <AnimatePresence mode="wait">
           {tab === 'track' ? (
             <motion.div key="track" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} transition={{ duration: 0.3 }}>
-              <form className="field-row" onSubmit={(e) => { e.preventDefault(); runTrack(code); }}>
-                <input className="field" value={code} onChange={(e) => setCode(e.target.value)} placeholder={tl.trackPh} aria-label={tl.trackPh} />
-                <button className="btn btn--primary btn--sm" type="submit">{tl.trackBtn}</button>
-              </form>
-
-              {loading && (
-                <div className="track-loading">
-                  <span className="spinner" /> {tl.loading}
-                </div>
-              )}
-
-              {result && (
-                <motion.div className="track-result" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-                  <div className="track-result__head">
-                    <div>
-                      <span className="muted">{tl.shipment}</span>
-                      <strong>{result}</strong>
-                    </div>
-                    <span className={`status ${done >= stages.length ? 'status--ok' : ''}`}>
-                      {done >= stages.length ? tl.delivered : tl.inProgress(done + 1, stages.length)}
-                    </span>
-                  </div>
-                  <div className="track-bar-progress"><motion.span initial={{ width: 0 }} animate={{ width: `${(done / stages.length) * 100}%` }} transition={{ duration: 1.2, ease: EASINGS.premium }} /></div>
-                  <ul className="track-steps">
-                    {stages.map((s, i) => (
-                      <motion.li
-                        key={i}
-                        className={i < done ? 'is-done' : i === done ? 'is-current' : ''}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.15 + i * 0.08 }}
-                      >
-                        <span className="track-steps__dot">{i < done ? <Icon name="check" size={12} stroke={3} /> : null}</span>
-                        <div><strong>{s.label}</strong><span>{s.place}</span></div>
-                      </motion.li>
-                    ))}
-                  </ul>
-                  <p className="demo-note">{tl.trackNote}</p>
-                </motion.div>
-              )}
+              <TrackPanel request={{ code: trackCode, nonce }} />
             </motion.div>
           ) : (
             <motion.div key="quote" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }}>
