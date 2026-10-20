@@ -66,6 +66,18 @@ const es = {
       { title: 'Carga consolidada', kicker: 'China · USA · Europa', desc: 'Consolidamos su carga en cualquier ciudad de China, USA o Europa con las tarifas más competitivas del mercado.', tags: ['Tarifas preferenciales', 'Cualquier ciudad'] },
     ],
   },
+  ops: {
+    eyebrow: 'Detrás de cada embarque',
+    title: 'Mientras tu carga cruza el océano, detrás hay toda una operación que debe estar bien coordinada.', accent: [14, 15],
+    steps: [
+      { tag: 'Coordinación', label: 'Conectamos cada etapa', text: 'En ITP Cargo acompañamos a empresas en sus procesos de logística internacional, conectando cada etapa para que sus importaciones y exportaciones avancen con mayor control, claridad y seguimiento.' },
+      { tag: 'Operación', label: 'Transporte y documentación', text: 'Desde la coordinación del transporte hasta el manejo documental y logístico de la operación, nuestro objetivo es que tu empresa pueda enfocarse en crecer mientras nosotros nos ocupamos de mover tu carga.' },
+      { tag: 'Logística', label: 'Más que transporte', text: 'Si tu empresa importa o exporta, necesitas más que transporte; necesitas una logística bien gestionada.' },
+    ],
+    captions: ['Puerto', 'Terminal', 'En ruta'],
+    cta: 'Hablemos de tu operación',
+    scroll: 'Desliza para ver la operación',
+  },
   process: {
     eyebrow: 'Cómo trabajamos',
     title: 'Desde la fábrica hasta su almacén', accent: [3, 4, 5, 6], breaks: [2],
@@ -283,6 +295,18 @@ const en: Dict = {
       { title: 'Warehousing & distribution', kicker: 'Storage · Inventory', desc: 'We store, sort and dispatch your cargo according to your needs.', tags: ['Inventory', 'Picking', 'Dispatch'] },
       { title: 'Consolidated cargo', kicker: 'China · USA · Europe', desc: 'We consolidate your cargo in any city in China, the USA or Europe at the most competitive rates on the market.', tags: ['Preferential rates', 'Any city'] },
     ],
+  },
+  ops: {
+    eyebrow: 'Behind every shipment',
+    title: 'While your cargo crosses the ocean, there is a whole operation behind it that must be well coordinated.', accent: [16, 17],
+    steps: [
+      { tag: 'Coordination', label: 'We connect every stage', text: 'At ITP Cargo we support companies through their international logistics processes, connecting every stage so their imports and exports move forward with more control, clarity and follow-up.' },
+      { tag: 'Operations', label: 'Transport and paperwork', text: 'From transport coordination to the paperwork and logistics of the operation, our goal is for your company to focus on growing while we take care of moving your cargo.' },
+      { tag: 'Logistics', label: 'More than transport', text: 'If your company imports or exports, you need more than transport; you need well-managed logistics.' },
+    ],
+    captions: ['Port', 'Terminal', 'En route'],
+    cta: 'Let’s talk about your operation',
+    scroll: 'Scroll to see the operation',
   },
   process: {
     eyebrow: 'How we work',

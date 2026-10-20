@@ -5,6 +5,7 @@ import FloatingCTA from './components/FloatingCTA';
 import Hero from './sections/Hero';
 import Story from './sections/Story';
 import Services from './sections/Services';
+import Operation from './sections/Operation';
 import Process from './sections/Process';
 import Imports from './sections/Imports';
 import Tools from './sections/Tools';
@@ -29,6 +30,7 @@ export default function App() {
         <Hero onTrack={onTrack} />
         <Story />
         <Services />
+        <Operation />
         <Process />
         <Imports />
         <Tools trackCode={track.code} nonce={track.nonce} />
