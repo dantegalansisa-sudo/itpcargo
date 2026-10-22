@@ -5,8 +5,8 @@ export type Lang = 'es' | 'en';
 
 const es = {
   meta: {
-    title: 'ITP Cargo — Logística y transporte desde la fábrica hasta su almacén',
-    description: 'ITP Cargo: más de 28 años moviendo el comercio de República Dominicana. Carga marítima, aérea y terrestre, consolidación desde China, USA y Europa, aduanas y almacenaje puerta a puerta.',
+    title: 'ITP Cargo | Transporte de carga y logística en República Dominicana',
+    description: 'Agente de carga con más de 28 años en RD: carga marítima, aérea y terrestre, consolidación desde China, USA y Europa, aduanas y entrega puerta a puerta.',
   },
   wa: {
     default: 'Hola ITP Cargo, me gustaría solicitar una cotización.',
@@ -235,8 +235,8 @@ export type Dict = typeof es;
 
 const en: Dict = {
   meta: {
-    title: 'ITP Cargo — Logistics & freight from the factory to your warehouse',
-    description: 'ITP Cargo: 28+ years moving Dominican Republic trade. Ocean, air and ground freight, consolidation from China, USA and Europe, customs and door-to-door warehousing.',
+    title: 'ITP Cargo | Freight forwarding & logistics in the Dominican Republic',
+    description: 'Freight forwarder with 28+ years in the DR: ocean, air and ground freight, consolidation from China, USA and Europe, customs clearance and door-to-door delivery.',
   },
   wa: {
     default: 'Hello ITP Cargo, I would like to request a quote.',
@@ -466,25 +466,41 @@ const DICTS: Record<Lang, Dict> = { es, en };
 type Ctx = { lang: Lang; t: Dict; setLang: (l: Lang) => void };
 const LangContext = createContext<Ctx>({ lang: 'es', t: es, setLang: () => {} });
 
-function initialLang(): Lang {
+export const SITE_URL = 'https://www.itpcargo.com.do';
+const PATHS: Record<Lang, string> = { es: '/', en: '/en/' };
+
+/**
+ * La URL manda: "/" es español y "/en/" es inglés. Así cada idioma es una página
+ * indexable por Google (Googlebot no debe recibir otro idioma según su navegador).
+ * Se mantiene "?lang=en" de los enlaces viejos y se redirige a la ruta correcta.
+ */
+function langFromUrl(): Lang {
   const q = new URLSearchParams(window.location.search).get('lang');
   if (q === 'en' || q === 'es') return q;
-  try {
-    const saved = localStorage.getItem('itp-lang');
-    if (saved === 'en' || saved === 'es') return saved;
-  } catch { /* almacenamiento no disponible */ }
-  return navigator.language?.toLowerCase().startsWith('es') ? 'es' : 'en';
+  return /^\/en(\/|$)/.test(window.location.pathname) ? 'en' : 'es';
+}
+
+function setMeta(selector: string, attr: string, value: string) {
+  document.querySelector(selector)?.setAttribute(attr, value);
 }
 
 export function LangProvider({ children }: { children: React.ReactNode }) {
-  const [lang, setLang] = useState<Lang>(initialLang);
+  const [lang, setLang] = useState<Lang>(langFromUrl);
   const t = DICTS[lang];
 
   useEffect(() => {
+    const path = PATHS[lang];
+    if (window.location.pathname !== path || window.location.search) {
+      window.history.replaceState(null, '', path + window.location.hash);
+    }
     document.documentElement.lang = lang;
     document.title = t.meta.title;
-    document.querySelector('meta[name="description"]')?.setAttribute('content', t.meta.description);
-    try { localStorage.setItem('itp-lang', lang); } catch { /* almacenamiento no disponible */ }
+    setMeta('meta[name="description"]', 'content', t.meta.description);
+    setMeta('link[rel="canonical"]', 'href', SITE_URL + path);
+    setMeta('meta[property="og:url"]', 'content', SITE_URL + path);
+    setMeta('meta[property="og:title"]', 'content', t.meta.title);
+    setMeta('meta[property="og:description"]', 'content', t.meta.description);
+    setMeta('meta[property="og:locale"]', 'content', lang === 'es' ? 'es_DO' : 'en_US');
   }, [lang, t]);
 
   return <LangContext.Provider value={{ lang, t, setLang }}>{children}</LangContext.Provider>;

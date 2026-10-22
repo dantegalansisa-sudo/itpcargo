@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import CustomCursor from './components/CustomCursor';
 import Header from './components/Header';
 import FloatingCTA from './components/FloatingCTA';
 import Hero from './sections/Hero';
@@ -24,7 +23,6 @@ export default function App() {
 
   return (
     <>
-      <CustomCursor />
       <Header />
       <main>
         <Hero onTrack={onTrack} />
